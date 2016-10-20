@@ -138,8 +138,14 @@ def makeFilename(nameFormat, imageInfo, artistInfo=None, tagsSeparator=' ', tags
     nameFormat = nameFormat.replace('%image_id%', str(imageInfo.imageId))
     nameFormat = nameFormat.replace('%member_id%', str(artistInfo.artistId))
     nameFormat = nameFormat.replace('%member_token%', artistInfo.artistToken)
-    nameFormat = nameFormat.replace('%works_date%', imageInfo.worksDate)
-    nameFormat = nameFormat.replace('%works_date_only%', imageInfo.worksDate.split(' ')[0])
+    ##    nameFormat = nameFormat.replace('%works_date%', imageInfo.worksDate)
+    ##    nameFormat = nameFormat.replace('%works_date_only%', imageInfo.worksDate.split(' ')[0])
+    try:
+        nameFormat = nameFormat.replace('%works_date%', datetime.datetime.strptime(imageInfo.worksDate, u'%m-%d-%Y %H:%M').strftime(u'%Y-%m-%d %H:%M'))
+        nameFormat = nameFormat.replace('%works_date_only%', datetime.datetime.strptime(imageInfo.worksDate, u'%m-%d-%Y %H:%M').strftime(u'%Y-%m-%d %H:%M').split(' ')[0])
+    except ValueError as ve:
+        nameFormat = nameFormat.replace('%works_date%', imageInfo.worksDate)
+        nameFormat = nameFormat.replace('%works_date_only%', imageInfo.worksDate.split(' ')[0])
     # formatted date/time, ex. %works_date_fmt{%Y-%m-%d}%
     if nameFormat.find("%works_date_fmt") > -1:
         to_replace = re.findall("(%works_date_fmt{.*}%)", nameFormat)
